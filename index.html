@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro de Produtos</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-gray-100 min-h-screen">
+    <div class="container mx-auto px-4 py-8">
+        <!-- Header -->
+        <header class="text-center mb-8">
+            <h1 class="text-4xl font-bold text-gray-800 mb-2">Cadastro de Produtos</h1>
+            <p class="text-gray-600">Gerencie seus produtos de forma simples e eficiente</p>
+        </header>
+
+        <!-- Formulário de Cadastro -->
+        <div class="bg-white rounded-lg shadow-lg p-6 mb-8 max-w-2xl mx-auto">
+            <h2 class="text-2xl font-semibold text-gray-800 mb-4">Novo Produto</h2>
+            <form id="productForm" class="space-y-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label for="nome" class="block text-sm font-medium text-gray-700 mb-1">
+                            Nome do Produto *
+                        </label>
+                        <input 
+                            type="text" 
+                            id="nome" 
+                            name="nome" 
+                            required 
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                            placeholder="Ex: iPhone 15"
+                        >
+                    </div>
+                    
+                    <div>
+                        <label for="preco" class="block text-sm font-medium text-gray-700 mb-1">
+                            Preço *
+                        </label>
+                        <input 
+                            type="number" 
+                            id="preco" 
+                            name="preco" 
+                            step="0.01" 
+                            required 
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                            placeholder="0.00"
+                        >
+                    </div>
+                </div>
+
+                <div>
+                    <label for="categoria" class="block text-sm font-medium text-gray-700 mb-1">
+                        Categoria
+                    </label>
+                    <select 
+                        id="categoria" 
+                        name="categoria" 
+                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    >
+                        <option value="Geral">Geral</option>
+                        <option value="Eletrônicos">Eletrônicos</option>
+                        <option value="Roupas">Roupas</option>
+                        <option value="Casa">Casa</option>
+                        <option value="Livros">Livros</option>
+                        <option value="Esportes">Esportes</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label for="imagem" class="block text-sm font-medium text-gray-700 mb-1">
+                        URL da Imagem
+                    </label>
+                    <input 
+                        type="url" 
+                        id="imagem" 
+                        name="imagem" 
+                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        placeholder="https://exemplo.com/imagem.jpg"
+                    >
+                    <small class="text-gray-500 text-xs mt-1 block">
+                        Formatos aceitos: JPG, PNG, GIF, WebP, SVG
+                    </small>
+                </div>
+
+                <div>
+                    <label for="descricao" class="block text-sm font-medium text-gray-700 mb-1">
+                        Descrição
+                    </label>
+                    <textarea 
+                        id="descricao" 
+                        name="descricao" 
+                        rows="3" 
+                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        placeholder="Descreva o produto..."
+                    ></textarea>
+                </div>
+
+                <div class="flex gap-3">
+                    <button 
+                        type="submit" 
+                        class="flex-1 bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition duration-200"
+                    >
+                        <span class="loading" id="loadingSpinner">🔄</span>
+                        <span id="submitText">Cadastrar Produto</span>
+                    </button>
+                    
+                    <button 
+                        type="button" 
+                        id="clearForm"
+                        class="bg-gray-500 text-white py-2 px-4 rounded-md hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition duration-200"
+                    >
+                        Limpar
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Seção de Produtos -->
+        <div class="max-w-6xl mx-auto">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-semibold text-gray-800">Produtos Cadastrados</h2>
+                <button 
+                    id="refreshProducts"
+                    class="bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition duration-200"
+                >
+                    Atualizar Lista
+                </button>
+            </div>
+
+            <!-- Loading indicator -->
+            <div id="productsLoading" class="text-center py-8 hidden">
+                <div class="text-gray-600">Carregando produtos...</div>
+            </div>
+
+            <!-- Products Grid -->
+            <div id="productsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Cards serão gerados dinamicamente aqui -->
+            </div>
+
+            <!-- Empty state -->
+            <div id="emptyState" class="text-center py-12 hidden">
+                <div class="text-gray-500 text-lg mb-2">Nenhum produto cadastrado ainda</div>
+                <div class="text-gray-400">Cadastre seu primeiro produto usando o formulário acima</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast notifications -->
+    <div id="toast" class="fixed top-4 right-4 z-50 hidden">
+        <div class="bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg">
+            <div id="toastMessage">Produto cadastrado com sucesso!</div>
+        </div>
+    </div>
+
+    <script src="scripts.js"></script>
+</body>
+</html>
